@@ -1,7 +1,7 @@
-const app = reqire("express")()
+const app = require("express")()
 
 app.get("/", (req, res) => {
     res.json({message: "App is running"})
 })
 
-app.listen(8080)
+app.listen(process.env.PORT || 8080)
