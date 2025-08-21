@@ -1,15 +1,23 @@
 const express = require('express')
 const http = require('http')
 const { Server } = require('socket.io')
+const cors = require('cors')
 
 const app = express()
+
+// Enable CORS for all routes
+app.use(cors({
+  origin: '*',
+}))
+
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
     origin: '*', 
-    methods: ['GET', 'POST'],
   },
 })
+
+app.get('/ping', (req, res) => res.send('OK'))
 
 // Handle WebSocket connections.
 io.on('connection', (socket) => {
@@ -17,18 +25,16 @@ io.on('connection', (socket) => {
 
   // Listen for 'update-grid' from a client and broadcast to all clients.
   socket.on('update-data', (data) => {
-    console.log('Received data:', data)
     io.emit('update-grid', data) // Broadcast to all connected clients.
   })
 
-  socket.on('message', (data) => {
-    console.log('Received message data:', data)
+  socket.on('update-grid-8x12', (data) => {
+    console.log("update-grid-8x12", data)
     io.emit('update-grid', data) // Broadcast to all connected clients.
   })
 
   // Handle 'request' event for request-response pattern.
   socket.on('request', (data, ack) => {
-    console.log('Received request:', data)
     // Example response customize as needed.
     ack({ status: 'success', data })
   })
