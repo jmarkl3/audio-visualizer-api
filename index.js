@@ -1,11 +1,44 @@
-const app = require("express")()
-const cors = require("cors")
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 
-// Enable CORS for all routes
-app.use(cors())
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000', // Allow your React app's origin (default Create React App port).
+    methods: ['GET', 'POST'],
+  },
+});
 
-app.get("/", (req, res) => {
-    res.json({message: "App is running"})
-})
+// Handle WebSocket connections.
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
 
-app.listen(process.env.PORT || 8080)
+  // Listen for 'update-grid' from a client and broadcast to all clients.
+  socket.on('update-data', (data) => {
+    console.log('Received data:', data);
+    io.emit('update-grid', data); // Broadcast to all connected clients.
+  });
+
+  socket.on('message', (data) => {
+    console.log('Received message data:', data);
+    io.emit('update-grid', data); // Broadcast to all connected clients.
+  });
+
+  // Handle 'request' event for request-response pattern.
+  socket.on('request', (data, ack) => {
+    console.log('Received request:', data);
+    // Example response; customize as needed.
+    ack({ status: 'success', data });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
+// Start server on port 8080 (matches useSocket URL).
+server.listen(8080, () => {
+  console.log('Server running on http://localhost:8080');
+});
