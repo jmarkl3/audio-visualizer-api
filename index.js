@@ -17,11 +17,21 @@ const io = new Server(server, {
   },
 })
 
+let currentGrid = [
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,0,0,0,0,0,0,0,0,0,0,0]
+];
+
 app.get('/ping', (req, res) => {
   console.log("Pinged")
   res.send('OK')
 })
-
 app.get('/test', (req, res) => {
   console.log("Test endpoint reached")
   res.json({message: 'Major Tom to ground control, all systems go.'})
@@ -52,6 +62,9 @@ app.get('/test-frame-2', (req, res) => {
   ]
   res.json({matrix: returnArray})
 })
+app.get('/current-grid', (req, res) => {
+  res.json({matrix: currentGrid});
+});
 
 // Handle WebSocket connections.
 io.on('connection', (socket) => {
@@ -63,6 +76,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('update-grid-8x12', (data) => {
+    currentGrid = data.matrix; // Store the latest grid
     io.emit('update-grid', data) // Broadcast to all connected clients.
   })
 
