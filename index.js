@@ -26,6 +26,33 @@ app.get('/test', (req, res) => {
   console.log("Test endpoint reached")
   res.json({message: 'Major Tom to ground control, all systems go.'})
 })
+app.get('/test-frame-1', (req, res) => {
+  let returnArray = [
+    [ 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0 ],
+    [ 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0 ],
+    [ 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0 ],
+    [ 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0 ],
+    [ 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+  ]
+  res.json({matrix: returnArray})
+})
+app.get('/test-frame-2', (req, res) => {
+  let returnArray = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+    [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+    [0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0]
+  ]
+  res.json({matrix: returnArray})
+})
+
 // Handle WebSocket connections.
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id)
