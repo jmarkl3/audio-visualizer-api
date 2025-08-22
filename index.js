@@ -17,10 +17,15 @@ const io = new Server(server, {
   },
 })
 
-app.get('/ping', (req, res) => res.send('OK'))
+app.get('/ping', (req, res) => {
+  console.log("Pinged")
+  res.send('OK')
+})
 
-app.get('/test', (req, res) => res.json({message: 'Major Tom to ground control, all systems go.'}))
-
+app.get('/test', (req, res) => {
+  console.log("Test endpoint reached")
+  res.json({message: 'Major Tom to ground control, all systems go.'})
+})
 // Handle WebSocket connections.
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id)
