@@ -19,6 +19,8 @@ const io = new Server(server, {
 
 app.get('/ping', (req, res) => res.send('OK'))
 
+app.get('/test', (req, res) => res.json({message: 'Major Tom to ground control, all systems go.'}))
+
 // Handle WebSocket connections.
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id)
@@ -29,7 +31,6 @@ io.on('connection', (socket) => {
   })
 
   socket.on('update-grid-8x12', (data) => {
-    console.log("update-grid-8x12", data)
     io.emit('update-grid', data) // Broadcast to all connected clients.
   })
 
