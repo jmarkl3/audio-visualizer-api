@@ -28,10 +28,13 @@ let currentGrid = [
   [0,0,0,0,0,0,0,0,0,0,0,0]
 ];
 
+// Ping to spin up free tier server instance
 app.get('/ping', (req, res) => {
   console.log("Pinged")
   res.send('OK')
 })
+
+// Testing endpoints
 app.get('/test', (req, res) => {
   console.log("Test endpoint reached")
   res.json({message: 'Major Tom to ground control, all systems go.'})
@@ -62,37 +65,35 @@ app.get('/test-frame-2', (req, res) => {
   ]
   res.json({matrix: returnArray})
 })
+
 app.get('/current-grid', (req, res) => {
   res.json(currentGrid);
 });
 
-// Handle WebSocket connections.
+// Socket connections
 io.on('connection', (socket) => {
+  // Log connection event
   console.log('Client connected:', socket.id)
 
-  // Listen for 'update-grid' from a client and broadcast to all clients.
+  // Broadcasting 'update-data' to all clients
   socket.on('update-data', (data) => {
-    io.emit('update-grid', data) // Broadcast to all connected clients.
+    currentGrid = data
+    io.emit('update-grid', data) 
   })
 
+  // For arduino 8x12 led matrix
   socket.on('update-grid-8x12', (data) => {
-    currentGrid = data; // Store the latest grid
-    // console.log(data)
-    io.emit('update-grid', data) // Broadcast to all connected clients.
+    io.emit('update-grid', data)
   })
 
-  // Handle 'request' event for request-response pattern.
-  socket.on('request', (data, ack) => {
-    // Example response customize as needed.
-    ack({ status: 'success', data })
-  })
-
+  // Log disconnect event
   socket.on('disconnect', () => {
     console.log('Client disconnected:', socket.id)
   })
+
 })
 
-// Start server on port 8080 (matches useSocket URL).
+// Start server on port 8080 or the render.com configuration port 
 server.listen(process.env.PORT || 8080, () => {
   console.log('Server running.')
 })
